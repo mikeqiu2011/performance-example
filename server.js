@@ -1,5 +1,6 @@
 const express = require('express')
 const cluster = require('cluster')
+const os = require('os')
 
 const app = express()
 
@@ -31,11 +32,14 @@ the output will be when you run npm start:
     running server process
     worker process started
 */
-console.log('running server process');
+// console.log('running server process');
 if (cluster.isPrimary) {
     console.log('Master has been started');
-    cluster.fork()
-    cluster.fork()  // fork two workers
+    const NUM_WORKERS = os.cpus().length  // the logical cores of the OS
+
+    for (i = 0; i < NUM_WORKERS; i++) {
+        cluster.fork()
+    }
 } else {
     console.log('worker process started');
     app.listen(3000) // each worker listen on the same port
