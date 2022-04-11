@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 
 app.get('/timer', (req, res) => {
     // delay the response on purpose
-    delay(5000)  // the server cannot process any other request, even like query DB
+    delay(9000)  // the server cannot process any other request, even like query DB
     res.send(`Ding ding ding... ${process.pid}`)
 })
 
