@@ -1,7 +1,4 @@
 const express = require('express')
-const cluster = require('cluster')
-const os = require('os')
-
 const app = express()
 
 function delay(duration) {
@@ -18,33 +15,12 @@ app.get('/', (req, res) => {
 
 app.get('/timer', (req, res) => {
     // delay the response on purpose
-    delay(9000)  // the server cannot process any other request, even like query DB
-    res.send(`Ding ding ding... ${process.pid}`)
+    delay(4000)  // the server cannot process any other request, even like query DB
+    res.send(`beep beep... ${process.pid}`)
 })
 
 
-/*
-the output will be when you run npm start:
-    running server process
-    Master has been started
-    running server process
-    worker process started
-    running server process
-    worker process started
-*/
-// console.log('running server process');
-if (cluster.isPrimary) {
-    console.log('Master has been started');
-    const NUM_WORKERS = os.cpus().length  // the logical cores of the OS
-
-    for (i = 0; i < NUM_WORKERS; i++) {
-        cluster.fork()
-    }
-} else {
-    console.log('worker process started');
-    app.listen(3000) // each worker listen on the same port
-}
-
-// app.listen(3000, () => {
-//     console.log('server is listening at port 3000');
-// })
+// now we use pm2 to manage our cluster, no need to fork in our app.js
+app.listen(3000, () => {
+    console.log('server is listening at port 3000');
+})
